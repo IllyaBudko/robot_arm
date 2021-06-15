@@ -43,7 +43,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-  uint16_t adc1_data[5];
+  uint32_t adc1_data[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,6 +75,7 @@ int main(void)
   HAL_Init();
   ADC1_Init();
 
+  ADC1->CR2 |= ADC_CR2_SWSTART;
   /* USER CODE BEGIN Init */
   
   /* USER CODE END Init */
@@ -120,10 +121,10 @@ void ADC1_Init(void)
   RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
   //Set 5 pins to analog in GPIOA
   GPIOA->MODER |= 0x3FF << 0;
-  GPIOA->PUPDR = 0x00000000;
+  GPIOA->PUPDR |= 0x3FF << 0;
   
   //ADC prescaler, PCLK/2
-  ADC->CCR |= (0x03 << 16);
+  //ADC->CCR |= (0x03 << 16);
   //8-bit ADC
   ADC1->CR1 |= (0x02 << 24);
   //scan mode enable
@@ -133,23 +134,23 @@ void ADC1_Init(void)
   //ADC1->CR1 |= (); //select timer trigger here
   
   //ADC data alignment right
-  ADC1->CR2 |= ADC_CR2_ALIGN;
+  ADC1->CR2 &= ~ADC_CR2_ALIGN;
   
   //ADC end of conversion selection, overrun only in DMA, check ref man
   ADC1->CR2 |= ADC_CR2_EOCS;
   
   //Do DMA config here
+  ADC1->CR2 |= ADC_CR2_DDS;
   ADC1->CR2 |= ADC_CR2_DMA;
   
   //ADC sampling cycles, 3 cycles per, just zero both sampling registers
   ADC1->SMPR1 = 0x00000000;
-  ADC1->SMPR2 = 0x00000000;
+  ADC1->SMPR2 &= ~0x07FFF;
   
   //ADC, select number of conversions, 5
-  ADC1->SQR1 |= (5 << 20);
+  ADC1->SQR1 |= (0x4 << 20);
   
   //ADC sequence selection, for now just one after the other
-  ADC1->SQR3 = 0x00000000;
   ADC1->SQR3 |= (1 << 5);
   ADC1->SQR3 |= (2 << 10);
   ADC1->SQR3 |= (3 << 15);
@@ -157,26 +158,33 @@ void ADC1_Init(void)
   
   //DMA setup for adc here
   //channel0 at stream0
-  DMA1_Stream0->CR &= ~(7 << 25);
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
+  
+  DMA2_Stream0->CR &= ~(7 << 25);
   //mem data size
-  DMA1_Stream0->CR |= (0x01 << 13);
+  DMA2_Stream0->CR |= (0x03 << 13);
   //periph data size
-  DMA1_Stream0->CR |= (0x01 << 11);
-  DMA1_Stream0->CR |= DMA_SxCR_MINC;
-  DMA1_Stream0->CR |= DMA_SxCR_PINC;
-  DMA1_Stream0->CR |= DMA_SxCR_CIRC;
-  DMA1_Stream0->CR &= ~(0x03 << 6);
+  DMA2_Stream0->CR |= (0x03 << 11);
+  DMA2_Stream0->CR |= DMA_SxCR_MINC;
+  DMA2_Stream0->CR |= DMA_SxCR_CIRC;
+  DMA2_Stream0->CR &= ~(0x03 << 6);
   
-  DMA1_Stream0->NDTR = 5;
-  DMA1_Stream0->PAR = (uint32_t)(&(ADC1->DR));
-  DMA1_Stream0->M0AR = (uint32_t)adc1_data;
+  DMA2_Stream0->NDTR = 5;
+  DMA2_Stream0->PAR = (uint32_t)(&(ADC1->DR));
+  DMA2_Stream0->M0AR = (uint32_t)adc1_data;
   
-  DMA1_Stream0->CR |= (1 << 0);
+  DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;
+  
+  DMA2_Stream0->CR |= (1 << 0);
   
   //ADC set to continuous mode
   ADC1->CR2 |= ADC_CR2_CONT;
   //ADC on here
   ADC1->CR2 |= ADC_CR2_ADON;
+  
+  HAL_Delay(1);
+
+
   
   
 }
