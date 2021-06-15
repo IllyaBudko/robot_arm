@@ -18,6 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -42,11 +43,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+  uint16_t adc1_data[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void ADC1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -64,15 +66,17 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+  ADC1_Init();
 
   /* USER CODE BEGIN Init */
-
+  
   /* USER CODE END Init */
 
   /* USER CODE BEGIN SysInit */
@@ -101,42 +105,81 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
+  //No need Reset values good 
 }
 
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+void ADC1_Init(void)
+{
+  //Turn on GPIOA Clock
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+  //Turn on Clock to ADC
+  RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
+  //Set 5 pins to analog in GPIOA
+  GPIOA->MODER |= 0x3FF << 0;
+  GPIOA->PUPDR = 0x00000000;
+  
+  //ADC prescaler, PCLK/2
+  ADC->CCR |= (0x03 << 16);
+  //8-bit ADC
+  ADC1->CR1 |= (0x02 << 24);
+  //scan mode enable
+  ADC1->CR1 |= (0x01 << 8);
+  //Do timer trigger later, needs setup simple timer for timed adc conversionk trigger
+  //ADC1->CR1 |= (0x01 << 28); // trigger detection on rising edge
+  //ADC1->CR1 |= (); //select timer trigger here
+  
+  //ADC data alignment right
+  ADC1->CR2 |= ADC_CR2_ALIGN;
+  
+  //ADC end of conversion selection, overrun only in DMA, check ref man
+  ADC1->CR2 |= ADC_CR2_EOCS;
+  
+  //Do DMA config here
+  ADC1->CR2 |= ADC_CR2_DMA;
+  
+  //ADC sampling cycles, 3 cycles per, just zero both sampling registers
+  ADC1->SMPR1 = 0x00000000;
+  ADC1->SMPR2 = 0x00000000;
+  
+  //ADC, select number of conversions, 5
+  ADC1->SQR1 |= (5 << 20);
+  
+  //ADC sequence selection, for now just one after the other
+  ADC1->SQR3 = 0x00000000;
+  ADC1->SQR3 |= (1 << 5);
+  ADC1->SQR3 |= (2 << 10);
+  ADC1->SQR3 |= (3 << 15);
+  ADC1->SQR3 |= (4 << 20);
+  
+  //DMA setup for adc here
+  //channel0 at stream0
+  DMA1_Stream0->CR &= ~(7 << 25);
+  //mem data size
+  DMA1_Stream0->CR |= (0x01 << 13);
+  //periph data size
+  DMA1_Stream0->CR |= (0x01 << 11);
+  DMA1_Stream0->CR |= DMA_SxCR_MINC;
+  DMA1_Stream0->CR |= DMA_SxCR_PINC;
+  DMA1_Stream0->CR |= DMA_SxCR_CIRC;
+  DMA1_Stream0->CR &= ~(0x03 << 6);
+  
+  DMA1_Stream0->NDTR = 5;
+  DMA1_Stream0->PAR = (uint32_t)(&(ADC1->DR));
+  DMA1_Stream0->M0AR = (uint32_t)adc1_data;
+  
+  DMA1_Stream0->CR |= (1 << 0);
+  
+  //ADC set to continuous mode
+  ADC1->CR2 |= ADC_CR2_CONT;
+  //ADC on here
+  ADC1->CR2 |= ADC_CR2_ADON;
+  
+  
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
