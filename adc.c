@@ -20,9 +20,10 @@ void ADC1_Init(void)
   ADC1->CR1 |= (0x02 << 24);
   //scan mode enable
   ADC1->CR1 |= (0x01 << 8);
-  //Do timer trigger later, needs setup simple timer for timed adc conversionk trigger
-  //ADC1->CR1 |= (0x01 << 28); // trigger detection on rising edge
-  //ADC1->CR1 |= (); //select timer trigger here
+  
+  /*ADC periph trigger settings*/
+  ADC1->CR2 |= (0x01 << 28); // trigger detection on rising edge
+  ADC1->CR2 |= (0x06 << 24); //TIM2 TRGO
   
   //ADC data alignment right
   ADC1->CR2 &= ~ADC_CR2_ALIGN;
@@ -55,26 +56,40 @@ void ADC1_DMA_Init(uint16_t * adc_data)
 {
   
   ////Needs to be double-checked
-  
-  
-  //DMA setup for adc here
-  //channel0 at stream0
+  // DMA2 Clock enable
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
   
+  /*Channel 0 selected for ADC1, as per ref manual.
+    bits cleared to make sure proper channel is selected*/
   DMA2_Stream0->CR &= ~(7 << 25);
+  
   //mem data size
-  DMA2_Stream0->CR |= (0x03 << 13);
+  DMA2_Stream0->CR |= (0x01 << 13);
   //periph data size
-  DMA2_Stream0->CR |= (0x03 << 11);
+  DMA2_Stream0->CR |= (0x01 << 11);
+  //Set memory increment mode
   DMA2_Stream0->CR |= DMA_SxCR_MINC;
+  /*DMA2 configured in circular mode, will change later,
+    after timer trigger gets setup for adc conversion trigger*/
   DMA2_Stream0->CR |= DMA_SxCR_CIRC;
+  
+  //Clear direction bit to make sure periph to mem data transfer is accomplished
   DMA2_Stream0->CR &= ~(0x03 << 6);
   
+  //number of data transfers = 5
   DMA2_Stream0->NDTR = 5;
+  
   DMA2_Stream0->PAR = (uint32_t)(&(ADC1->DR));
   DMA2_Stream0->M0AR = (uint32_t)adc_data;
   
-  DMA2_Stream0->FCR |= DMA_SxFCR_DMDIS;
+  /*Cleared for use of direct mode in DMA transfer,
+    might change later to be used with FIFO*/
+  DMA2_Stream0->FCR &= ~DMA_SxFCR_DMDIS;
+}
+
+void ADC1_TIM_TRGO_Init(void)
+{
+  //Do TIM2 setup here
 }
 
 void ADC1_Start(void)
@@ -82,7 +97,8 @@ void ADC1_Start(void)
   //Start DMA before periph, as per DMA guide
   DMA2_Stream0->CR |= (1 << 0);
   
-  //ADC on here
+  //ADC ON here
   ADC1->CR2 |= ADC_CR2_ADON;
+  ADC1->CR2 |= ADC_CR2_SWSTART;
 }
 

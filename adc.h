@@ -6,6 +6,7 @@
 //function prototypes
 void ADC1_Init(void);
 void ADC1_DMA_Init(uint16_t * adc_data);
+void ADC1_TIM_TRGO_Init(void);
 void ADC1_Start(void);
 
 

@@ -20,7 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include "main.h"
-
+#include "adc.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -73,9 +73,11 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+  
   ADC1_Init();
-
-  ADC1->CR2 |= ADC_CR2_SWSTART;
+  ADC1_DMA_Init(adc1_data);
+  ADC1_Start();
+  
   /* USER CODE BEGIN Init */
   
   /* USER CODE END Init */
