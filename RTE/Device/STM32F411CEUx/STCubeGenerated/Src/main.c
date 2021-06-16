@@ -76,6 +76,7 @@ int main(void)
   
   ADC1_Init();
   ADC1_DMA_Init(adc1_data);
+  ADC1_TIM_TRGO_Init();
   ADC1_Start();
   
   /* USER CODE BEGIN Init */
@@ -100,6 +101,19 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+}
+
+void TIM2_IRQHandler(void)
+{
+  if(TIM2->DIER & 0x01)
+  {
+    if(TIM2->SR & 0x01)
+    {
+      TIM2->SR &= ~(1 << 0);
+    }
+  }
+  GPIOB->ODR |= (1 << 12);
+  GPIOB->ODR &= ~(1 << 12);
 }
 
 /**

@@ -49,7 +49,7 @@ void ADC1_Init(void)
   ADC1->SQR3 |= (4 << 20);
   
   //ADC set to continuous mode
-  ADC1->CR2 |= ADC_CR2_CONT;
+  //ADC1->CR2 |= ADC_CR2_CONT;
 
 }
 void ADC1_DMA_Init(uint16_t * adc_data)
@@ -89,7 +89,32 @@ void ADC1_DMA_Init(uint16_t * adc_data)
 
 void ADC1_TIM_TRGO_Init(void)
 {
+  /*DEBUG: setup GPIO pin to trigger on timer update generation*/
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+  
+  GPIOB->MODER |= (0x01 << 24); //gen purp output
+  GPIOB->OTYPER &= ~(1 << 12); // push pull
+  GPIOB->PUPDR &= ~(0x03 << 24); // no pullup/down
+  
   //Do TIM2 setup here
+  //TIM2 Clock enable
+  RCC->APB1ENR |=RCC_APB1ENR_TIM2EN;
+  
+  /*setup timer to have an update every 5ms to trigger
+    the adc*/
+  
+  /*TIM2 counter reg*/
+  TIM2->ARR = 9999;
+  /*TIM2 prescaler reg*/
+  TIM2->PSC = 7;
+  /*select update event as trigger output*/
+  TIM2->CR2 |= (0x02 << 4);
+  
+  //TIM2 update generation interrupt enable
+  TIM2->DIER |= TIM_DIER_UIE;
+  // enable NVIC irq for tim2
+  NVIC_EnableIRQ(TIM2_IRQn);
+  
 }
 
 void ADC1_Start(void)
@@ -100,5 +125,8 @@ void ADC1_Start(void)
   //ADC ON here
   ADC1->CR2 |= ADC_CR2_ADON;
   ADC1->CR2 |= ADC_CR2_SWSTART;
+  
+  //Start TIM2 for TRGO to the ADC1
+  TIM2->CR1 |= TIM_CR1_CEN;
 }
 
