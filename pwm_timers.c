@@ -70,8 +70,6 @@ void PWM_TIM3_Init(void)
   TIM3->CCR3 = 750;  // CH1
   TIM3->CCR4 = 1000; // CH2
   
-  
-  
 }
 
 void PWM_TIM3_Start(void)
