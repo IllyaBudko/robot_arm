@@ -4,7 +4,8 @@
 
 #include "stm32f411xe.h"
 
-
+void PWM_TIM3_Init(void);
+void PWM_TIM3_Start(void);
 
 
 

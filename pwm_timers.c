@@ -7,10 +7,10 @@ void PWM_TIM3_Init(void)
   
   need to setup gpios for timer pwm outputs
   
-  and enable clock for tim3
-  
   */
   
+  /*TIM3 clock enable*/
+  RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
   
   /*TIM3 counter reg*/
   TIM3->ARR = 9999;
@@ -44,23 +44,27 @@ void PWM_TIM3_Init(void)
   TIM3->CCMR2 |= TIM_CCMR2_OC3PE; //ch3
   TIM3->CCMR2 |= TIM_CCMR2_OC4PE; //ch4
   
-  /*
+  /*pwm polarity*/
+  TIM3->CCER &= ~(0x03 << 1);
+  TIM3->CCER &= ~(0x03 << 5);
+  TIM3->CCER &= ~(0x03 << 9);
+  TIM3->CCER &= ~(0x03 << 13);
   
-  need to setup channels polarity, CCxP bits in TIM_CCER
+  /*pwm output enable*/
+  TIM3->CCER |= TIM_CCER_CC1E;
+  TIM3->CCER |= TIM_CCER_CC2E;
+  TIM3->CCER |= TIM_CCER_CC3E;
+  TIM3->CCER |= TIM_CCER_CC4E;
   
-  and output enable, CCxE bit in TIM_CCER
-  
-  */
-  
-  
-  
-  
+  /*figure oout default CCR registers later :)*/
   
   
 }
 
-void PWM_TIM3_Start(void)
+void PWM_TIM_Start(void)
 {
+  /*UG bit needs to be set one time to start pwm, read more about this
+    start both timer here*/
   
 }
 

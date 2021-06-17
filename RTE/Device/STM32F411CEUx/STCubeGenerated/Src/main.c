@@ -109,7 +109,7 @@ void TIM2_IRQHandler(void)
   {
     if(TIM2->SR & 0x01)
     {
-      TIM2->SR &= ~(1 << 0);
+      TIM2->SR &= ~(1 << 0);  
     }
   }
   GPIOB->ODR |= (1 << 12);
