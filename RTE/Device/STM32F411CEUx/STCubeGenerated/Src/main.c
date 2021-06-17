@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
 #include "main.h"
+#include "my_maths.h"
+
 #include "adc.h"
 #include "pwm_timers.h"
 /* Private includes ----------------------------------------------------------*/
