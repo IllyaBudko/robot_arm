@@ -8,6 +8,12 @@ void PWM_TIM3_Init(void)
   need to setup gpios for timer pwm outputs
   
   */
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN; 
+  
+  /*GPIOB Pins seup for AF02 for PWM output on TIM3 channels*/
+                  /*Pin0       ,  Pin1       ,  Pin4        ,  Pin5*/
+  GPIOB->MODER  |= (0x02 << 0) | (0x02 << 2) | (0x02 << 8)  | (0x02 << 10);
+  GPIOB->AFR[0] |= (0x02 << 0) | (0x02 << 4) | (0x02 << 16) | (0x02 << 20);
   
   /*TIM3 clock enable*/
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -56,16 +62,26 @@ void PWM_TIM3_Init(void)
   TIM3->CCER |= TIM_CCER_CC3E;
   TIM3->CCER |= TIM_CCER_CC4E;
   
-  /*figure oout default CCR registers later :)*/
+  /*TODO, Add my_maths file pair for no offset map function,
+    map wih offset and moving average function. use map function
+    delete this after this is just for now*/
+  TIM3->CCR1 = 500;  // CH3
+  TIM3->CCR2 = 750;  // CH4
+  TIM3->CCR3 = 750;  // CH1
+  TIM3->CCR4 = 1000; // CH2
+  
   
   
 }
 
-void PWM_TIM_Start(void)
+void PWM_TIM3_Start(void)
 {
   /*UG bit needs to be set one time to start pwm, read more about this
     start both timer here*/
-  
+  /*set Update generation bit to start pwm mode*/
+  TIM3->EGR |= TIM_EGR_UG;
+  /*set Counter enable bit to start counter*/
+  TIM3->CR1 |= TIM_CR1_CEN;
 }
 
 

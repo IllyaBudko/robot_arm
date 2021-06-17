@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include "main.h"
 #include "adc.h"
+#include "pwm_timers.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -78,6 +79,9 @@ int main(void)
   ADC1_DMA_Init(adc1_data);
   ADC1_TIM_TRGO_Init();
   ADC1_Start();
+  
+  PWM_TIM3_Init();
+  PWM_TIM3_Start();
   
   /* USER CODE BEGIN Init */
   
