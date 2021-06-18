@@ -3,9 +3,14 @@
 
 #include "stm32f411xe.h"
 
+#define MOV_AVG_BUF_SZ    7
+
 struct servo_ctrl_block
 {
-  uint8_t servo_name[15];
+  /*
+    Add servo name later
+  char servo_name[15];
+  */
   
   /*
     Do this next version with moving average buffer on heap
@@ -17,15 +22,21 @@ struct servo_ctrl_block
   uint8_t moving_average_samples;
   
   */
+  uint8_t adc_mov_avg_buffer_idx;
+  uint8_t adc_mov_avg_buffer_size;
+  uint16_t adc_mov_avg_buffer[MOV_AVG_BUF_SZ];
+  uint16_t adc_mov_avg;
   
-  uint32_t lower_limit;
-  uint32_t upper_limit;
+  uint32_t pos_lower_limit;
+  uint32_t pos_upper_limit;
   
-  uint32_t start_position;
-  uint32_t current_position;
+  uint32_t pos_start;
+  uint32_t pos_current;
 };
 
-void Servo_Init(uint8_t * servo_name,);
+//add more params
+void Servo_Init(struct servo_ctrl_block * servo);
+
 
 
 
