@@ -52,7 +52,7 @@ void ADC1_Init(void)
   //ADC1->CR2 |= ADC_CR2_CONT;
 
 }
-void ADC1_DMA_Init(uint16_t * adc_data)
+void ADC1_DMA_Init(struct adc_data * adc_dma_value)
 {
   
   ////Needs to be double-checked
@@ -80,7 +80,7 @@ void ADC1_DMA_Init(uint16_t * adc_data)
   DMA2_Stream0->NDTR = 5;
   
   DMA2_Stream0->PAR = (uint32_t)(&(ADC1->DR));
-  DMA2_Stream0->M0AR = (uint32_t)adc_data;
+  DMA2_Stream0->M0AR = (uint32_t)adc_dma_value;
   
   /*Cleared for use of direct mode in DMA transfer,
     might change later to be used with FIFO*/

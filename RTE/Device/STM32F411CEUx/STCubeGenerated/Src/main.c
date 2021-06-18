@@ -47,7 +47,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-  volatile uint16_t adc1_data[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,7 +68,7 @@ void ADC1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  struct adc_data adc_dma_read_values = {0,0,0,0};
 
   /* USER CODE END 1 */
 
@@ -79,7 +78,7 @@ int main(void)
   HAL_Init();
   
   ADC1_Init();
-  ADC1_DMA_Init(adc1_data);
+  ADC1_DMA_Init(&adc_dma_read_values);
   ADC1_TIM_TRGO_Init();
   ADC1_Start();
   
