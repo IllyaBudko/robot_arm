@@ -4,6 +4,10 @@
 #include "stm32f411xe.h"
 
 #define MOV_AVG_BUF_SZ    7
+#define TIM_CH1           (uint8_t)1U
+#define TIM_CH2           (uint8_t)2U
+#define TIM_CH3           (uint8_t)3U
+#define TIM_CH4           (uint8_t)4U
 
 struct servo_ctrl_block
 {
@@ -36,11 +40,19 @@ struct servo_ctrl_block
   
   uint32_t pwm_pos_at_rest;
   uint32_t pwm_pos_current;
+  
+  uint16_t timer_channel;
+  
+  
 };
 
 //add more params
-void Servo_Init(struct servo_ctrl_block * servo);
-uint16_t Servo_Update_Position(struct servo_ctrl_block * servo);
+void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel);
+
+/*
+  use #defines for timer_channel
+*/
+void Servo_Update_Position(struct servo_ctrl_block * servo, TIM_TypeDef * timer, volatile uint32_t timer_channel);
 
 
 

@@ -47,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-  uint16_t adc1_data[5];
+  volatile uint16_t adc1_data[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

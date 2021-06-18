@@ -5,11 +5,8 @@
 
 /*
   V1.0
-  
-  V2.0
-  Add servo name
 */
-void Servo_Init(struct servo_ctrl_block * servo)
+void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel)
 {
   servo->adc_input_start = 0;
   servo->adc_input_end   = 256;
@@ -28,7 +25,7 @@ void Servo_Init(struct servo_ctrl_block * servo)
   servo->adc_mov_avg_value       = 0;
 }
 
-uint16_t Servo_Update_Position(struct servo_ctrl_block * servo)
+void Servo_Update_Position(struct servo_ctrl_block * servo, TIM_TypeDef * timer, volatile uint32_t timer_channel)
 {
   uint16_t temp_pos_current = 0;
   temp_pos_current = (uint16_t)map(servo->adc_mov_avg_value,\
@@ -38,7 +35,23 @@ uint16_t Servo_Update_Position(struct servo_ctrl_block * servo)
                                    servo->pwm_pos_upper_limit);
   
   servo->pwm_pos_current = temp_pos_current;
-  
+  switch(servo->timer_channel)
+  {
+    case TIM_CH1:
+      timer->CCR1 = servo->pwm_pos_current;
+      break;
+    case TIM_CH2:
+      timer->CCR2 = servo->pwm_pos_current;
+      break;
+    case TIM_CH3:
+      timer->CCR3 = servo->pwm_pos_current;
+      break;
+    case TIM_CH4:
+      timer->CCR4 = servo->pwm_pos_current;
+      break;
+    default:
+      while(1);
+  }    
   
   servo->adc_mov_avg_buffer_idx ++;
   if(servo->adc_mov_avg_buffer_idx == servo->adc_mov_avg_buffer_size)
