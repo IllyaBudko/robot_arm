@@ -20,9 +20,11 @@ void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel)
   uint8_t adc_ma_buf_sz = sizeof(servo->adc_mov_avg_buffer);
   uint8_t adc_ma_buf_var_sz = sizeof(servo->adc_mov_avg_buffer[0]);
   
-  servo->adc_mov_avg_buffer_size = ((adc_ma_buf_sz / adc_ma_buf_var_sz) - adc_ma_buf_var_sz);
+  servo->adc_mov_avg_buffer_size = (adc_ma_buf_sz / adc_ma_buf_var_sz);
   servo->adc_mov_avg_buffer_idx  = 0;
   servo->adc_mov_avg_value       = 0;
+  
+  servo->timer_channel = timer_channel;
 }
 
 void Servo_Update_Position(struct servo_ctrl_block * servo, TIM_TypeDef * timer, volatile uint32_t timer_channel)
@@ -35,6 +37,7 @@ void Servo_Update_Position(struct servo_ctrl_block * servo, TIM_TypeDef * timer,
                                    servo->pwm_pos_upper_limit);
   
   servo->pwm_pos_current = temp_pos_current;
+  //uint8_t timer_ch = servo->timer_channel;
   switch(servo->timer_channel)
   {
     case TIM_CH1:

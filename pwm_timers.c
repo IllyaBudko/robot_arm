@@ -65,9 +65,9 @@ void PWM_TIM3_Init(void)
   /*TODO, Add my_maths file pair for no offset map function,
     map wih offset and moving average function. use map function
     delete this after, this is just for now*/
-  TIM3->CCR1 = 500;  // CH3
-  TIM3->CCR2 = 750;  // CH4
-  TIM3->CCR3 = 750;  // CH1
+  TIM3->CCR1 = 1000;  // CH3
+  TIM3->CCR2 = 1000;  // CH4
+  TIM3->CCR3 = 1000;  // CH1
   TIM3->CCR4 = 1000; // CH2
   
 }

@@ -112,14 +112,14 @@ int main(void)
   {
     /* USER CODE END WHILE */
     moving_average(&servo1,adc_dma_read_values.adc_data_value_1);
-    moving_average(&servo1,adc_dma_read_values.adc_data_value_2);
-    moving_average(&servo1,adc_dma_read_values.adc_data_value_3);
-    moving_average(&servo1,adc_dma_read_values.adc_data_value_4);
+//    moving_average(&servo1,adc_dma_read_values.adc_data_value_2);
+//    moving_average(&servo1,adc_dma_read_values.adc_data_value_3);
+//    moving_average(&servo1,adc_dma_read_values.adc_data_value_4);
     
     Servo_Update_Position(&servo1, TIM3, TIM_CH1);
-    Servo_Update_Position(&servo2, TIM3, TIM_CH2);
-    Servo_Update_Position(&servo3, TIM3, TIM_CH3);
-    Servo_Update_Position(&servo4, TIM3, TIM_CH4);
+//    Servo_Update_Position(&servo2, TIM3, TIM_CH2);
+//    Servo_Update_Position(&servo3, TIM3, TIM_CH3);
+//    Servo_Update_Position(&servo4, TIM3, TIM_CH4);
 
     /* USER CODE BEGIN 3 */
   }
