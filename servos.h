@@ -22,20 +22,25 @@ struct servo_ctrl_block
   uint8_t moving_average_samples;
   
   */
-  uint8_t adc_mov_avg_buffer_idx;
-  uint8_t adc_mov_avg_buffer_size;
+  uint16_t adc_input_start;
+  uint16_t adc_input_end;
+  
+  uint8_t  adc_mov_avg_buffer_idx;
+  uint8_t  adc_mov_avg_buffer_size;
   uint16_t adc_mov_avg_buffer[MOV_AVG_BUF_SZ];
   uint16_t adc_mov_avg;
+  uint16_t adc_mov_avg_value;
   
-  uint32_t pos_lower_limit;
-  uint32_t pos_upper_limit;
+  uint32_t pwm_pos_lower_limit;
+  uint32_t pwm_pos_upper_limit;
   
-  uint32_t pos_start;
-  uint32_t pos_current;
+  uint32_t pwm_pos_at_rest;
+  uint32_t pwm_pos_current;
 };
 
 //add more params
 void Servo_Init(struct servo_ctrl_block * servo);
+uint16_t Servo_Update_Position(struct servo_ctrl_block * servo);
 
 
 

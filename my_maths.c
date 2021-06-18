@@ -25,7 +25,6 @@ uint32_t no_offset_map(uint32_t known_num, uint32_t known_denom, uint32_t unknow
 
 uint16_t moving_average(struct servo_ctrl_block * servo, uint16_t adc_value)
 {
-  uint16_t mov_avg_value;
   uint8_t temp_servo_idx = servo->adc_mov_avg_buffer_idx;
   servo->adc_mov_avg -= servo->adc_mov_avg_buffer[temp_servo_idx];
   servo->adc_mov_avg_buffer[temp_servo_idx] = adc_value;
@@ -35,9 +34,9 @@ uint16_t moving_average(struct servo_ctrl_block * servo, uint16_t adc_value)
   
   servo->adc_mov_avg += servo->adc_mov_avg_buffer[temp_servo_idx];
   
-  //return servo->adc_mov_avg / 15;
+  //return servo->adc_mov_avg / 7;
   
-  mov_avg_value = servo->adc_mov_avg / 7;
+  servo->adc_mov_avg_value = servo->adc_mov_avg / 7;
   
   
   /*

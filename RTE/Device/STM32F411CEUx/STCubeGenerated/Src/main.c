@@ -24,6 +24,7 @@
 
 #include "adc.h"
 #include "pwm_timers.h"
+#include "servos.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
