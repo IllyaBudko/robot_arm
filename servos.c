@@ -17,8 +17,8 @@ void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel)
   servo->pwm_pos_at_rest = 750U;
   servo->pwm_pos_current = 750U;
   
-  size_t adc_ma_buf_sz = sizeof(servo->adc_mov_avg_buffer);
-  size_t adc_ma_buf_var_sz = sizeof(servo->adc_mov_avg_buffer[0]);
+  uint8_t adc_ma_buf_sz = sizeof(servo->adc_mov_avg_buffer);
+  uint8_t adc_ma_buf_var_sz = sizeof(servo->adc_mov_avg_buffer[0]);
   
   servo->adc_mov_avg_buffer_size = ((adc_ma_buf_sz / adc_ma_buf_var_sz) - adc_ma_buf_var_sz);
   servo->adc_mov_avg_buffer_idx  = 0;

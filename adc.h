@@ -3,12 +3,12 @@
 
 #include "stm32f411xe.h"
 
-volatile struct adc_data
+struct adc_data
 {
-  uint16_t adc_data_value_1;
-  uint16_t adc_data_value_2;
-  uint16_t adc_data_value_3;
-  uint16_t adc_data_value_4;
+  volatile uint16_t adc_data_value_1;
+  volatile uint16_t adc_data_value_2;
+  volatile uint16_t adc_data_value_3;
+  volatile uint16_t adc_data_value_4;
 };
 
 //function prototypes

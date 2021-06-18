@@ -69,13 +69,21 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   struct adc_data adc_dma_read_values = {0,0,0,0};
-
+  struct servo_ctrl_block servo1;
+  struct servo_ctrl_block servo2;
+  struct servo_ctrl_block servo3;
+  struct servo_ctrl_block servo4;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+  
+  Servo_Init(&servo1,TIM_CH1);
+  Servo_Init(&servo1,TIM_CH2);
+  Servo_Init(&servo1,TIM_CH3);
+  Servo_Init(&servo1,TIM_CH4);
   
   ADC1_Init();
   ADC1_DMA_Init(&adc_dma_read_values);
@@ -103,6 +111,15 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+    moving_average(&servo1,adc_dma_read_values.adc_data_value_1);
+    moving_average(&servo1,adc_dma_read_values.adc_data_value_2);
+    moving_average(&servo1,adc_dma_read_values.adc_data_value_3);
+    moving_average(&servo1,adc_dma_read_values.adc_data_value_4);
+    
+    Servo_Update_Position(&servo1, TIM3, TIM_CH1);
+    Servo_Update_Position(&servo2, TIM3, TIM_CH2);
+    Servo_Update_Position(&servo3, TIM3, TIM_CH3);
+    Servo_Update_Position(&servo4, TIM3, TIM_CH4);
 
     /* USER CODE BEGIN 3 */
   }
