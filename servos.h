@@ -3,7 +3,7 @@
 
 #include "stm32f411xe.h"
 
-#define MOV_AVG_BUF_SZ    7
+#define MOV_AVG_BUF_SZ    50U
 #define TIM_CH1           (uint8_t)1U
 #define TIM_CH2           (uint8_t)2U
 #define TIM_CH3           (uint8_t)3U
@@ -47,7 +47,7 @@ struct servo_ctrl_block
 };
 
 //add more params
-void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel);
+void Servo_Init(struct servo_ctrl_block * servo, uint32_t pwm_low_limit, uint32_t pwm_high_limit, uint8_t timer_channel);
 
 /*
   use #defines for timer_channel

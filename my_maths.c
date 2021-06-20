@@ -30,7 +30,7 @@ void moving_average(struct servo_ctrl_block * servo, uint16_t adc_value)
   
   //return servo->adc_mov_avg / 7;
   
-  servo->adc_mov_avg_value = servo->adc_mov_avg / 7;
+  servo->adc_mov_avg_value = servo->adc_mov_avg / MOV_AVG_BUF_SZ;
 }
 
 

@@ -6,13 +6,13 @@
 /*
   V1.0
 */
-void Servo_Init(struct servo_ctrl_block * servo, uint8_t timer_channel)
+void Servo_Init(struct servo_ctrl_block * servo, uint32_t pwm_low_limit, uint32_t pwm_high_limit, uint8_t timer_channel)
 {
   servo->adc_input_start = 0;
   servo->adc_input_end   = 256;
   
-  servo->pwm_pos_lower_limit = 500U;
-  servo->pwm_pos_upper_limit = 1000U;
+  servo->pwm_pos_lower_limit = pwm_low_limit;  // 200 // 500
+  servo->pwm_pos_upper_limit = pwm_high_limit; // 1200 // 1000
   
   servo->pwm_pos_at_rest = 750U;
   servo->pwm_pos_current = 750U;
@@ -37,8 +37,8 @@ void Servo_Update_Position(struct servo_ctrl_block * servo, TIM_TypeDef * timer,
                                    servo->pwm_pos_upper_limit);
   
   servo->pwm_pos_current = temp_pos_current;
-  //uint8_t timer_ch = servo->timer_channel;
-  switch(servo->timer_channel)
+  uint8_t timer_ch = servo->timer_channel;
+  switch(timer_ch)
   {
     case TIM_CH1:
       timer->CCR1 = servo->pwm_pos_current;

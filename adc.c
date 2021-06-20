@@ -104,9 +104,9 @@ void ADC1_TIM_TRGO_Init(void)
     the adc*/
   
   /*TIM2 counter reg*/
-  TIM2->ARR = 9999;
+  TIM2->ARR = 999; /*9999 for 5 ms*/
   /*TIM2 prescaler reg*/
-  TIM2->PSC = 7;
+  TIM2->PSC = 5; /*7 for 5 ms*/
   /*select update event as trigger output*/
   TIM2->CR2 |= (0x02 << 4);
   
