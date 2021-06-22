@@ -8,7 +8,7 @@
 uint16_t map (uint16_t value, uint16_t In_Min, uint16_t In_Max, uint16_t Out_Min, uint16_t Out_Max)
 {
   uint16_t new_value = 0;
-  new_value = ((value - In_Min) * ((Out_Max - Out_Min) / (In_Max - In_Min)) + Out_Min);
+  new_value = ((value - In_Min) * ((float)(Out_Max - Out_Min) / (float)(In_Max - In_Min)) + Out_Min);
   return new_value;
 }
 
