@@ -9,7 +9,7 @@
 void Servo_Init(struct servo_ctrl_block * servo, uint32_t pwm_low_limit, uint32_t pwm_high_limit, uint8_t timer_channel)
 {
   servo->adc_input_start = 0;
-  servo->adc_input_end   = 256;
+  servo->adc_input_end   = 4095;
   
   servo->pwm_pos_lower_limit = pwm_low_limit;  // 200 // 500
   servo->pwm_pos_upper_limit = pwm_high_limit; // 1200 // 1000
@@ -17,11 +17,12 @@ void Servo_Init(struct servo_ctrl_block * servo, uint32_t pwm_low_limit, uint32_
   servo->pwm_pos_at_rest = 750U;
   servo->pwm_pos_current = 750U;
   
-  uint8_t adc_ma_buf_sz = sizeof(servo->adc_mov_avg_buffer);
-  uint8_t adc_ma_buf_var_sz = sizeof(servo->adc_mov_avg_buffer[0]);
+  //uint8_t adc_ma_buf_sz = sizeof(servo->adc_mov_avg_buffer);
+  //uint8_t adc_ma_buf_var_sz = sizeof(servo->adc_mov_avg_buffer[0]);
   
-  servo->adc_mov_avg_buffer_size = (adc_ma_buf_sz / adc_ma_buf_var_sz);
+  servo->adc_mov_avg_buffer_size = MOV_AVG_BUF_SZ;
   servo->adc_mov_avg_buffer_idx  = 0;
+  servo->adc_mov_avg             = 0;
   servo->adc_mov_avg_value       = 0;
   
   servo->timer_channel = timer_channel;

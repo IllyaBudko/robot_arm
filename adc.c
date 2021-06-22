@@ -17,7 +17,7 @@ void ADC1_Init(void)
   //ADC prescaler, PCLK/2
   //ADC->CCR |= (0x03 << 16);
   //8-bit ADC
-  ADC1->CR1 |= (0x02 << 24);
+  //ADC1->CR1 |= (0x02 << 24);
   //scan mode enable
   ADC1->CR1 |= (0x01 << 8);
   

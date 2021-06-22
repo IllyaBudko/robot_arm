@@ -81,7 +81,7 @@ int main(void)
   HAL_Init();
   
   Servo_Init(&servo1,200,1200,1);
-  Servo_Init(&servo2,600,1200,2);
+  Servo_Init(&servo2,200,1200,2);
   Servo_Init(&servo3,200,1200,3);
   Servo_Init(&servo4,200,1200,4);
   

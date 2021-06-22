@@ -3,7 +3,7 @@
 
 #include "stm32f411xe.h"
 
-#define MOV_AVG_BUF_SZ    50U
+#define MOV_AVG_BUF_SZ    10U
 #define TIM_CH1           (uint8_t)1U
 #define TIM_CH2           (uint8_t)2U
 #define TIM_CH3           (uint8_t)3U
@@ -35,11 +35,11 @@ struct servo_ctrl_block
   uint16_t adc_mov_avg;
   uint16_t adc_mov_avg_value;
   
-  uint32_t pwm_pos_lower_limit;
-  uint32_t pwm_pos_upper_limit;
+  uint16_t pwm_pos_lower_limit;
+  uint16_t pwm_pos_upper_limit;
   
-  uint32_t pwm_pos_at_rest;
-  uint32_t pwm_pos_current;
+  uint16_t pwm_pos_at_rest;
+  uint16_t pwm_pos_current;
   
   uint16_t timer_channel;
   

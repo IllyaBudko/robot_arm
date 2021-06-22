@@ -9,6 +9,7 @@ struct adc_data
   volatile uint16_t adc_data_value_2;
   volatile uint16_t adc_data_value_3;
   volatile uint16_t adc_data_value_4;
+  volatile uint16_t adc_data_value_5;
 };
 
 //function prototypes
